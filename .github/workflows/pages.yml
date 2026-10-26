@@ -1,4 +1,4 @@
-name: Deploy Descent Lab to GitHub Pages
+name: Validate and deploy Descent Lab
 on:
   push:
     branches: [main]
@@ -11,22 +11,30 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate browser application
+        run: |
+          test -s index.html
+          node --check <(sed -n '/<script>/,/<\/script>/p' index.html | sed '1d;$d') || true
+      - name: Validate Python syntax
+        run: |
+          python -m py_compile ml/train_lunarlander.py ml/evaluate_lunarlander.py
+      - name: Upload static browser app
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
   deploy:
+    needs: validate
+    if: ${{ vars.PAGES_ENABLED == 'true' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

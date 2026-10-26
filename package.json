@@ -1,0 +1,14 @@
+{
+  "name": "descent-lab-rocket-landing-ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A browser-based reinforcement-learning lab for a simplified rocket landing task.",
+  "scripts": {
+    "test": "node --test tests/core.test.cjs",
+    "check": "node --check src/core.js && node --check src/main.js && node --test tests/core.test.cjs",
+    "serve": "python3 -m http.server 8000"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

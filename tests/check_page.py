@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Small dependency-free structural smoke test for the deployed HTML shell."""
+"""Dependency-free structural smoke tests for the deployed app shell."""
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
@@ -41,8 +41,9 @@ def main():
     html = HTML_PATH.read_text(encoding="utf-8")
     parser = PageParser()
     parser.feed(html)
+    id_set = set(parser.ids)
     duplicates = sorted(k for k, v in Counter(parser.ids).items() if v > 1)
-    missing = sorted(REQUIRED_IDS - set(parser.ids))
+    missing = sorted(REQUIRED_IDS - id_set)
     errors = []
     if duplicates:
         errors.append("duplicate IDs: " + ", ".join(duplicates))
@@ -50,19 +51,32 @@ def main():
         errors.append("missing required UI IDs: " + ", ".join(missing))
     if parser.title_count != 1 or "<title>Descent Lab" not in html:
         errors.append("expected one Descent Lab document title")
-    for asset in ("src/core.js", "src/main.js"):
-        if asset not in parser.scripts:
-            errors.append(f"missing script asset: {asset}")
-        elif not (ROOT / asset).is_file():
-            errors.append(f"script asset not found: {asset}")
-    if "src/styles.css" not in parser.styles or not (ROOT / "src/styles.css").is_file():
-        errors.append("missing stylesheet asset src/styles.css")
+
+    main_js_path = ROOT / "src/main.js"
+    core_js_path = ROOT / "src/core.js"
+    css_path = ROOT / "src/styles.css"
+    for asset, label in ((core_js_path, "src/core.js"), (main_js_path, "src/main.js"), (css_path, "src/styles.css")):
+        if not asset.is_file():
+            errors.append("asset not found: " + label)
+    if "src/styles.css" not in parser.styles:
+        errors.append("page must load src/styles.css")
+    if "src/core.js" not in parser.scripts or "src/main.js" not in parser.scripts:
+        errors.append("page must load src/core.js and src/main.js")
+    if parser.scripts.index("src/core.js") > parser.scripts.index("src/main.js") if "src/core.js" in parser.scripts and "src/main.js" in parser.scripts else False:
+        errors.append("src/core.js must load before src/main.js")
+
+    if main_js_path.is_file():
+        source_refs = set(re.findall(r"\$\(['\"]([^'\"]+)['\"]\)", main_js_path.read_text(encoding="utf-8")))
+        missing_refs = sorted(source_refs - id_set)
+        if missing_refs:
+            errors.append("IDs referenced by src/main.js but missing from page: " + ", ".join(missing_refs))
+
     if errors:
         print("Page checks failed:")
         for error in errors:
             print(" -", error)
         return 1
-    print(f"Page checks passed: {len(parser.ids)} IDs, {len(parser.scripts)} scripts, {len(parser.styles)} stylesheets.")
+    print(f"Page checks passed: {len(parser.ids)} IDs; all app selectors exist; CSS and JS assets are linked.")
     return 0
 
 if __name__ == "__main__":

@@ -10,6 +10,29 @@
   <meta property="og:description" content="Train, observe and evaluate a rocket landing agent in an interactive reinforcement-learning lab.">
   <title>Descent Lab — Rocket Landing AI</title>
   <link rel="stylesheet" href="src/styles.css">
+  <style id="descent-layout-polish">
+    .system-tag{font:9px var(--mono);letter-spacing:.7px;color:#8396af;padding:6px 8px;border:1px solid var(--border);border-radius:5px}
+    .badge-live{display:inline-flex;align-items:center;gap:7px}
+    .policy-summary{margin:15px 16px 12px;padding:12px;border:1px solid #20384a;border-radius:7px;background:linear-gradient(130deg,#10232a,#0b1422)}
+    .policy-summary .row{display:flex;align-items:center;gap:8px;color:var(--mint);font:9px var(--mono);letter-spacing:.5px}
+    .policy-summary p{margin:7px 0 10px;color:var(--muted);font-size:10px;line-height:1.6}
+    .policy-summary .mini-tag{display:inline-flex;align-items:center;border:1px solid #2a443f;border-radius:4px;padding:4px 6px;color:#9cebd0;font:8px var(--mono);letter-spacing:.4px}
+    .compact-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 16px 16px}
+    .compact-actions .muted{font:9px var(--mono);text-align:right;white-space:nowrap}
+    .method-steps{display:grid;gap:0;padding:0 18px}
+    .method-steps article{display:grid;grid-template-columns:29px minmax(0,1fr);gap:10px;padding:12px 0;border-bottom:1px solid var(--border-soft)}
+    .method-steps article:last-child{border-bottom:0}
+    .method-number{font:10px var(--mono);color:var(--mint);padding-top:2px}
+    .method-steps strong{font:600 11px var(--display);color:var(--text)}
+    .method-steps p{font-size:10px;line-height:1.7;color:var(--muted);margin:4px 0 0}
+    .progress-caption{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .progress-caption label{font:9px var(--mono);letter-spacing:.8px;color:#8b9bb2}
+    .training-actions .file-button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+    .training-actions .file-button span{white-space:nowrap}
+    .quick-action-row .button{white-space:nowrap}
+    a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+    @media(max-width:560px){.compact-actions{align-items:flex-start;flex-direction:column}.compact-actions .muted{text-align:left}.system-tag{display:none}.method-steps{padding:0 13px}}
+  </style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23132b31'/%3E%3Cpath d='M32 8C24 17 21 26 22 37l10 9 10-9C43 26 40 17 32 8Z' fill='%237df0c4'/%3E%3Cpath d='M22 33 12 41l10 1m20-9 10 8-10 1M27 45l-2 10 7-6 7 6-2-10' fill='none' stroke='%237df0c4' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
 </head>
 <body>

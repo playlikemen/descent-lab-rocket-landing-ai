@@ -16,13 +16,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Validate browser application
-        run: |
-          test -s index.html
-          node --check <(sed -n '/<script>/,/<\/script>/p' index.html | sed '1d;$d') || true
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate page structure
+        run: python tests/check_page.py
+      - name: Check JavaScript and run core tests
+        run: npm run check
       - name: Validate Python syntax
-        run: |
-          python -m py_compile ml/train_lunarlander.py ml/evaluate_lunarlander.py
+        run: python -m py_compile ml/train_lunarlander.py ml/evaluate_lunarlander.py
       - name: Upload static browser app
         uses: actions/upload-pages-artifact@v3
         with:
